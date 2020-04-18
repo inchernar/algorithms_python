@@ -5,6 +5,8 @@ import time
 import random
 import matplotlib.pyplot as plt
 
+DEBUG = False
+
 class Sort:
 	@staticmethod
 	def algo_selection(l):
@@ -25,7 +27,40 @@ class Sort:
 			l[imin] = tmp
 		return l, iter_count
 
-class Benchmark():
+	@staticmethod
+	def algo_insertion(l):
+		iter_count = 0
+
+		for i in range(1, len(l)):
+			curr = l[i]
+			j = i - 1
+			# go to the left until find larger element
+			while j >= 0 and l[j] > curr:
+				iter_count+=1
+				l[j+1] = l[j]
+				j-=1
+			# swap current value and minimum from the left
+			l[j+1] = curr
+
+		return l, iter_count
+
+	@staticmethod
+	def algo_bubble(l):
+		iter_count = 0
+
+		for i in range(0, len(l)):
+			for j in range(len(l) - 1, i, -1):
+				iter_count+=1
+				# swap adjacent elements if left is larger
+				if l[j-1] > l[j]:
+					tmp = l[j-1]
+					l[j-1] = l[j]
+					l[j] = tmp
+
+		return l, iter_count
+
+
+class Benchmark:
 	def __init__(self, N0=1, N=10):
 		self.dimensions = [n for n in range(N0, N)]
 
@@ -51,7 +86,7 @@ class Benchmark():
 
 				# execute certain algorithm
 				start_time = time.time()
-				res = getattr(Sort, self.algorithms[0])(copy.copy(l))
+				res = getattr(Sort, algorithm)(copy.copy(l))
 				execution_time = time.time() - start_time
 
 				# save algorithm's benchmark results
@@ -68,10 +103,17 @@ class Benchmark():
 			plt.legend()
 			plt.show()
 
+
 def main():
-	benchmark = Benchmark()
-	benchmark.execute()
-	benchmark.plot()
+	if DEBUG:
+		l = [random.randrange(256) for i in range(10)]
+		print(l)
+		print(Sort.algo_bubble(l)[0])
+	else:
+		benchmark = Benchmark(N=200)
+		benchmark.execute()
+		benchmark.plot()
+
 
 if __name__ == '__main__':
 	main()
