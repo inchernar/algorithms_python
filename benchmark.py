@@ -1,13 +1,12 @@
-#!/usr/bin/env python3
-
 import copy
-
-
 import time
 import random
+
 import matplotlib.pyplot as plt
 
+
 DEBUG = False
+
 
 class Sort:
     @staticmethod
